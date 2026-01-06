@@ -80,16 +80,20 @@ update(yureId)
 	const blob = await cv.convertToBlob();
 	const url = URL.createObjectURL(blob);
 	const imgYureId = document.getElementById(`img${yureId}`);
-	imgYureId?.addEventListener('load', _ => {
-		URL.revokeObjectURL(url);
-	}, { once: true });
-	imgYureId?.setAttribute('src', url);
+	await new Promise(res => {
+		imgYureId?.addEventListener('load', _ => {
+			URL.revokeObjectURL(url);
+			res();
+		}, { once: true });
+		imgYureId?.setAttribute('src', url);
+	});
 }
 
-function
+async function
 forcedUpdate()
 {
-	Object.keys(yures).forEach(yureId => update(yureId));
+	const keys = Object.keys(yures);
+	await Promise.allSettled(keys.map(yureId => update(yureId)));
 	requestAnimationFrame(forcedUpdate);
 }
 
