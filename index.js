@@ -93,7 +93,13 @@ async function
 forcedUpdate()
 {
 	const keys = Object.keys(yures);
-	await Promise.allSettled(keys.map(yureId => update(yureId)));
+	await Promise.allSettled(keys.map(async yureId => {
+		await update(yureId);
+		if (Date.now() - yures[yureId][0].t > yureWidth * tDiv) {
+			delete yures[yureId];
+			document.getElementById(yureId)?.remove();
+		}
+	}));
 	requestAnimationFrame(forcedUpdate);
 }
 
