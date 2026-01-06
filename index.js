@@ -79,8 +79,11 @@ update(yureId)
 
 	const blob = await cv.convertToBlob();
 	const url = URL.createObjectURL(blob);
-	document.getElementById(`img${yureId}`)?.setAttribute('src', url);
-	URL.revokeObjectURL(url);
+	const imgYureId = document.getElementById(`img${yureId}`);
+	imgYureId?.addEventListener('load', _ => {
+		URL.revokeObjectURL(url);
+	}, { once: true });
+	imgYureId?.setAttribute('src', url);
 }
 
 function
