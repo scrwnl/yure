@@ -7,6 +7,8 @@ const yureHeight = 200;
 
 /** 時間の縮小率 */
 const tDiv = 50;
+/** 時間の位置 */
+const tOff = 0;
 /** ゆれの拡大率 */
 const xMul = 100;
 /** X 方向のゆれの位置 */
@@ -57,21 +59,21 @@ update(yureId)
 	ctx.strokeStyle = 'red';
 	ctx.beginPath();
 	yures[yureId].forEach(e => {
-		ctx.lineTo((now - e.t) / tDiv, e.x * xMul + xOff);
+		ctx.lineTo((now - e.t - tOff) / tDiv, e.x * xMul + xOff);
 	});
 	ctx.stroke();
 
 	ctx.strokeStyle = 'green';
 	ctx.beginPath();
 	yures[yureId].forEach(e => {
-		ctx.lineTo((now - e.t) / tDiv, e.y * xMul + yOff);
+		ctx.lineTo((now - e.t - tOff) / tDiv, e.y * xMul + yOff);
 	});
 	ctx.stroke();
 
 	ctx.strokeStyle = 'blue';
 	ctx.beginPath();
 	yures[yureId].forEach(e => {
-		ctx.lineTo((now - e.t) / tDiv, e.z * xMul + zOff);
+		ctx.lineTo((now - e.t - tOff) / tDiv, e.z * xMul + zOff);
 	});
 	ctx.stroke();
 
