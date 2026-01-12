@@ -18,6 +18,8 @@ const ws = new WebSocket('./');
 
 /** 加速度データバッファ */
 const buf = [ ];
+/** 画面ロック */
+let wakeLock = null;
 
 /** センサイベントハンドラ */
 function
@@ -52,6 +54,20 @@ form.addEventListener('submit', async e => {
 				return;
 		}
 
+		// 画面のスリープをさせないよう試みる
+		if ('wakeLock' in navigator) {
+			try {
+				await navigator.wakeLock.request('screen');
+			} catch (err) {
+				console.error(`Wake Lock error: ${err.name}, ${err.message}`);
+			}
+			try {
+				if (wakeLock) await wakeLock.release();
+			} catch (err) {}
+		} else {
+			console.warn('Wake Lock API not supported.');
+		}
+		
 		// センサの監視をはじめる
 		window.addEventListener('devicemotion', devMotionHandler);
 		btnStart.disabled = true;
@@ -63,5 +79,6 @@ form.addEventListener('submit', async e => {
 		window.removeEventListener('devicemotion', devMotionHandler);
 		btnStart.disabled = false
 		btnStop.disabled = true;
+		wakeLock.release().then(() => { wakeLock = null; });
 	}
 });
